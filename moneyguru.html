@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Guru - AI Financial Advice</title>
+    <link rel="stylesheet" href="moneyguru.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>💰 Money Guru</h2>
+        <p class="summary">Your spending insights:</p>
+        <div class="advice-box">
+            <h3>🔍 Advice:</h3>
+            <p id="adviceText">Analyzing your spending...</p>
+        </div>
+
+        <button class="btn refresh" id="refreshAdvice">🔄 Get New Advice</button>
+        <button class="btn back" id="backButton">⬅ Back to Transactions</button>
+    </div>
+
+    <script>
+        function getFinancialAdvice() {
+            let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            let totalSpent = transactions.reduce((sum, t) => sum + t.amount, 0);
+            let budget = parseFloat(localStorage.getItem("budget")) || 1;
+
+            let remainingBudget = budget - totalSpent;
+            let percentageRemaining = (remainingBudget / budget) * 100;
+            let advice = "";
+
+            if (percentageRemaining < 25) {
+                advice = "🚨 Warning: You've spent over 75% of your budget. Stop spending now!";
+            } else if (percentageRemaining < 50) {
+                advice = "⚠️ Caution: Your budget is running low. Spend wisely!";
+            } else if (percentageRemaining < 75) {
+                advice = "🟡 You're managing well, but keep an eye on your expenses.";
+            } else {
+                advice = "🎉 Great job! You’re on track with your budget. Keep saving!";
+            }
+
+            document.getElementById("adviceText").innerText = advice;
+        }
+
+        document.getElementById("refreshAdvice").addEventListener("click", getFinancialAdvice);
+        document.getElementById("backButton").addEventListener("click", () => {
+            window.location.href = "transactions.html";
+        });
+
+        getFinancialAdvice(); // Get advice on page load
+    </script>
+
+</body>
+</html>

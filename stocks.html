@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPI Transactions</title>
+    <link rel="stylesheet" href="stocks.css">
+</head>
+<body>
+
+    <button id="backToDashboardBtn" href>⬅ Back to Dashboard</button>
+
+    <div class="main-container">
+        <div class="section">
+            <h1>Welcome to SolveIt Money</h1>
+            <h3>Stocks You Could Have Bought</h3>
+            <ul id="stockSuggestions"></ul>
+            <button id="refreshStocksBtn">🔄 Refresh Stocks</button>
+        </div>
+    </div>
+
+    <script>
+        let companyNames = [
+            "AlphaTech", "BetaCorp", "GammaIndustries", "DeltaSystems", "Epsilon Ltd.",
+            "ZetaSoft", "EtaMotors", "ThetaTech", "IotaElectronics", "KappaPharma",
+            "LambdaInvestments", "MuRetail", "NuFashion", "XiAutomobile", "OmicronMedia",
+            "PiFoods", "RhoRealEstate", "SigmaEnergy", "TauLogistics", "UpsilonTelecom",
+            "PhiHealthcare", "ChiBiotech", "PsiFinance", "OmegaAirlines", "AeroDynamics",
+            "BlueWave Inc.", "CyberNet", "DataFlow Systems", "EcoSolutions", "FusionWare",
+            "GreenTech", "HyperLoop", "InnovateCorp", "JetStream", "KineticEnergy",
+            "LunarTech", "MicroNova", "NanoDynamics", "OptiComms", "QuantumTech",
+            "RapidRetail", "SolarWave", "TechNova", "UltraBio", "Vertex Systems",
+            "WebGen", "XenoLabs", "YellowBrick", "Zenith Robotics", "NextGenTech",
+            "FutureEnergy", "InfinitySoft", "DigitalEdge", "PioneerPharma", "NovaAerospace",
+            "SynergyAI", "GeneticMinds", "TitanCloud", "CyberneticX", "Vortex Systems",
+            "Elevate Holdings", "CrystalTech", "PrimeElectronics", "NeonData", "OmniLogix",
+            "AstroComms", "CelestialWare", "Emerald Labs", "Frontier Solutions", "GlowPower",
+            "Horizon AI", "IllumeEnergy", "JupiterTech", "KineticEdge", "LionTech",
+            "Matrix Systems", "Nexus Industries", "Orbit Innovations", "PhotonWare", "QuantumSoft",
+            "RadiantCorp", "Stellar Solutions", "TetraTech", "Unity Systems", "VelocityCorp",
+            "WonderBio", "Xcelerate Ltd.", "YottaData", "ZephyrTech", "Nimbus Networks",
+            "PentaEnergy", "DreamWorks AI", "Brilliance Systems", "CloudSphere", "DeepData Analytics",
+            "EpicRetail", "FlowCom", "GridX", "Hyperion AI", "Interstellar Labs"
+        ];
+
+        let stocks = companyNames.map(name => ({
+            name,
+            price: (Math.random() * 1000).toFixed(2)
+        }));
+
+        function suggestStocks(amount) {
+            const stockList = document.getElementById("stockSuggestions");
+            stockList.innerHTML = "";
+
+            const affordableStocks = stocks.filter(stock => stock.price <= amount);
+            affordableStocks.sort(() => 0.5 - Math.random()); // Shuffle stocks
+
+            affordableStocks.slice(0, 10).forEach(stock => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `You could have bought ${Math.floor(amount / stock.price)} shares of ${stock.name} at ₹${stock.price}`;
+                stockList.appendChild(listItem);
+            });
+        }
+
+        function fetchLastTransactionAmount() {
+            let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+            if (transactions.length > 0) {
+                let lastTransaction = transactions[transactions.length - 1];
+                suggestStocks(lastTransaction.amount);
+            }
+        }
+
+        document.getElementById("refreshStocksBtn").addEventListener("click", fetchLastTransactionAmount);
+
+        window.onload = fetchLastTransactionAmount;
+        document.getElementById("backToDashboardBtn").addEventListener("click", () => {
+            window.location.href = "dashboard.html";
+        });
+    </script>
+     
+
+</body>
+</html>

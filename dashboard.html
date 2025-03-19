@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <!-- Sidebar for navigation -->
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <a href="stocks.html">📈 Stocks</a>
+        <a href="share.html">📤 Share</a>
+        <a href="transactions.html">💰 Transactions</a>
+        <a href="moneyguru.html">🧙‍♂️💸Moneyguru</a>
+        <button onclick="window.location.href='signup.html'" class="logout-btn">Logout</button>
+
+    </div>
+
+    <!-- Main Dashboard Content -->
+    <div class="dashboard-content">
+        <h2>Welcome to Your Dashboard</h2>
+    </div>
+
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAHDq6RGHmZsUVaS3Zs-JvNaZRWOi16PQ",
+            authDomain: "solveit-money-8901b.firebaseapp.com",
+            projectId: "solveit-money-8901b",
+            storageBucket: "solveit-money-8901b.firebasestorage.app",
+            messagingSenderId: "156994887522",
+            appId: "1:156994887522:web:f2934235f30a43f4f0d63b",
+            measurementId: "G-E1RD6CTX3M"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Logout Button Event Listener
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            try {
+                await signOut(auth);
+                alert("Logged out successfully!");
+                window.location.href = "login.html"; // Redirect to login page after logout
+            } catch (error) {
+                alert("Error logging out: " + error.message);
+            }
+        });
+
+        // Check if user is logged in
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "login.html"; // Redirect to login page if not logged in
+            }
+        });
+    </script>
+</body>
+</html>

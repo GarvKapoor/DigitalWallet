@@ -1,0 +1,97 @@
+/* General Page Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container Box */
+.container {
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title */
+h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Summary Text */
+.summary {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Advice Box */
+.advice-box {
+    background: #eef2ff;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 5px solid #4c6ef5;
+    text-align: left;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Refresh Advice Button */
+.refresh {
+    background: #4c6ef5;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.refresh:hover {
+    background: #3a54c2;
+}
+
+/* Back Button */
+.back {
+    background: #e74c3c;
+    color: white;
+}
+
+.back:hover {
+    background: #c0392b;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .btn {
+        font-size: 14px;
+    }
+}

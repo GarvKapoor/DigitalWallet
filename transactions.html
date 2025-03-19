@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPI Transactions</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .main-container {
+            display: flex;
+            width: 80%;
+            max-width: 1200px;
+            gap: 20px;
+        }
+
+        .section {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .budget-bar-container {
+            width: 100%;
+            height: 30px;
+            background: #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .budget-bar {
+            width: 100%;
+            height: 100%;
+            background: #28a745;
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="backToDashboardBtn">⬅ Back to Dashboard</button>
+
+    <div class="main-container">
+        <!-- Budget Section -->
+        <div class="section">
+            <h2>Set Your Budget</h2>
+            <input type="number" id="budgetInput" placeholder="Enter Total Budget">
+            <button id="setBudgetBtn">Set Budget</button>
+            
+            <div class="budget-bar-container">
+                <div class="budget-bar" id="budgetBar"></div>
+            </div>
+            <p>Remaining: ₹<span id="remainingBudget">0</span></p>
+        </div>
+
+        <!-- Transactions Section -->
+        <div class="section">
+            <h1>Welcome to SolveIt Money</h1>
+
+            <div id="transactionForm">
+                <h3>Add a Transaction</h3>
+                <input type="number" id="amountInput" placeholder="Enter Amount">
+                <input type="text" id="payeeInput" placeholder="Enter Payee">
+                <button id="addTransactionBtn">Add Transaction</button>
+            </div>
+
+            <h2>Your Transactions</h2>
+            <label for="monthFilter">Filter by Month:</label>
+            <select id="monthFilter">
+                <option value="all">All Months</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+            
+            <button id="resetTransactionsBtn">Reset Transactions</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Payee</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsBody">
+                    <tr><td colspan="3">No transactions found.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+        let totalBudget = parseFloat(localStorage.getItem("budget")) || 0;
+        let remainingBudget = parseFloat(localStorage.getItem("remainingBudget")) || totalBudget;
+
+        document.getElementById("setBudgetBtn").addEventListener("click", () => {
+            totalBudget = parseFloat(document.getElementById("budgetInput").value) || 0;
+            remainingBudget = totalBudget;
+            localStorage.setItem("budget", totalBudget);
+            localStorage.setItem("remainingBudget", remainingBudget);
+            updateBudgetUI();
+        });
+
+        function updateBudgetUI() {
+            document.getElementById("remainingBudget").innerText = remainingBudget.toFixed(2);
+            const percentage = (remainingBudget / totalBudget) * 100;
+            document.getElementById("budgetBar").style.width = `${percentage}%`;
+            document.getElementById("budgetBar").style.backgroundColor = percentage < 30 ? "red" : "#28a745";
+        }
+
+        document.getElementById("addTransactionBtn").addEventListener("click", () => {
+            const amount = parseFloat(document.getElementById("amountInput").value);
+            const payee = document.getElementById("payeeInput").value.trim();
+
+            if (isNaN(amount) || amount <= 0 || payee === "") {
+                alert("Enter a valid amount and payee.");
+                return;
+            }
+
+            if (remainingBudget - amount < 0) {
+                alert("Not enough budget remaining!");
+                return;
+            }
+
+            const date = new Date();
+            const transaction = { amount, payee, date: date.toISOString() };
+            transactions.push(transaction);
+            localStorage.setItem("transactions", JSON.stringify(transactions));
+
+            remainingBudget -= amount;
+            localStorage.setItem("remainingBudget", remainingBudget);
+
+            updateBudgetUI();
+            displayTransactions();
+        });
+
+        function displayTransactions() {
+            const selectedMonth = document.getElementById("monthFilter").value;
+            const transactionsBody = document.getElementById("transactionsBody");
+            transactionsBody.innerHTML = "";
+
+            const filteredTransactions = selectedMonth === "all" ? transactions : 
+                transactions.filter(t => new Date(t.date).getMonth() + 1 === parseInt(selectedMonth));
+
+            if (filteredTransactions.length === 0) {
+                transactionsBody.innerHTML = "<tr><td colspan='3'>No transactions found.</td></tr>";
+                return;
+            }
+
+            filteredTransactions.forEach(({ amount, payee, date }) => {
+                const row = `<tr>
+                    <td>₹${amount}</td>
+                    <td>${new Date(date).toLocaleDateString()}</td>
+                    <td>${payee}</td>
+                </tr>`;
+                transactionsBody.innerHTML += row;
+            });
+        }
+
+        document.getElementById("monthFilter").addEventListener("change", displayTransactions);
+
+        document.getElementById("resetTransactionsBtn").addEventListener("click", () => {
+            if (confirm("Are you sure you want to reset all transactions?")) {
+                transactions = [];
+                remainingBudget = totalBudget;
+                localStorage.setItem("transactions", JSON.stringify([]));
+                localStorage.setItem("remainingBudget", remainingBudget);
+                updateBudgetUI();
+                displayTransactions();
+            }
+        });
+
+        document.getElementById("backToDashboardBtn").addEventListener("click", () => {
+            window.location.href = "dashboard.html";
+        });
+
+        updateBudgetUI();
+        displayTransactions();
+    </script>
+
+</body>
+</html>
